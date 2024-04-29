@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import NEULOGO from '../assets/NEULogo.png'
+import { useNavigate } from 'react-router-dom'; 
+import NEULOGO from '../../assets/NEULogo.png'
+import axios from 'axios'
 
 const LoginInstructor = () => {
     
@@ -7,6 +9,7 @@ const LoginInstructor = () => {
   const [typePassword, settypePassword] = useState('password');
   const [userName, setuserName] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate()
 
   const handleMouseEnter = () => {
     setFillColor('black');
@@ -24,33 +27,54 @@ const LoginInstructor = () => {
     }
   };
 
+  axios.defaults.withCredentials = true
   const handleLogin = async () => {
     console.log(userName);
     try {
-      const response = await fetch('http://localhost:9000/instructor/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userName: userName,
-          password: password,
-        }),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        if(data.success){
-          window.location.href = '/instructor';
+      await axios.post('http://localhost:9000/instructor/login', {
+        userName: userName,
+        password: password,
+      }).then(res => {
+        if(res.data.success){
+          navigate('/instructor')
         }
-      } else {
-        console.error('Failed to login:', response.status);
-      }
+        else{
+          alert("Kayıt yok")
+        }
+        console.log(res);
+      })
     } catch (error) {
       console.error('Failed to login:', error);
     }
   };
+
+  // const handleLogin = async () => {
+  //   console.log(userName);
+  //   try {
+  //     const response = await fetch('http://localhost:9000/instructor/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         userName: userName,
+  //         password: password,
+  //       }),
+  //     });
+      
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log(data);
+  //       if(data.success){
+  //         window.location.href = '/instructor';
+  //       }
+  //     } else {
+  //       console.error('Failed to login:', response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to login:', error);
+  //   }
+  // };
 
 
   return (

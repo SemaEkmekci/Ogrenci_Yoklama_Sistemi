@@ -17,12 +17,13 @@ app.use(bodyParser.json())
 app.use(session({
     secret: config.session.secret,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie:{
         secure:false,
-        maxAge:1000 * 10
+        maxAge:1000 * 60 * 15
     }
 }));
+
 
 
 app.use(express.json());

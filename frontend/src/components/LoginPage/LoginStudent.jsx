@@ -1,6 +1,6 @@
 import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import NEULOGO from '../assets/NEULogo.png'
+import NEULOGO from '../../assets/NEULogo.png'
 import axios from 'axios'
 
 const LoginInstructor = () => {
@@ -26,21 +26,6 @@ const LoginInstructor = () => {
       handleLogin();
     }
   };
-
-  
-
-    
-      // const fetchData = async () => {
-      //   try {
-      //     const response = await fetch('http://localhost:9000/student/info');
-      //     const data = await response.text();
-      //    console.log(data);
-      //   } catch (error) {
-      //     console.error('Error fetching data:', error);
-      //   }
-      // };
-  
-    
   
   
   axios.defaults.withCredentials = true
