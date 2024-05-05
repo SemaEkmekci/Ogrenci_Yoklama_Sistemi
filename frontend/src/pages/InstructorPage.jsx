@@ -99,7 +99,7 @@ const InstructorPage = () => {
     }   
   </div>
   <div>
-  {showStudentTable && <h1 className="text-3xl font-semibold">Öğrenciler</h1>}
+
   {showStudentTable &&  <StudentTable />}
 
   </div>

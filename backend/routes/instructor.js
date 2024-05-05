@@ -22,7 +22,7 @@ router.get('/info', async (req, res) => {
             }
     }
     else{
-        return res.status(401).json({valid:false, message: "Oturum bulunamadı"})
+        return res.json({valid:false, message: "Oturum bulunamadı"})
     }
 });
 
@@ -47,13 +47,13 @@ router.get('/students', async (req, res) => {
             //     WHERE dp.ders_id IN (${dersIDs.map((_, index) => `@dersID${index}`).join(', ')})
             // `;
             const query = `
-    SELECT o.ogrenci_no, o.ad, o.soyad, o.bolum, d.ders_id, d.ders_adi
-    FROM ogrenci o
-    INNER JOIN ogrenci_ders od ON o.ogrenci_id = od.ogrenci_id
-    INNER JOIN ders_programi dp ON od.ders_id = dp.ders_id
-    INNER JOIN ders d ON dp.ders_id = d.ders_id
-    WHERE dp.ders_id IN (${dersIDs.map((_, index) => `@dersID${index}`).join(', ')})
-`;
+                SELECT o.ogrenci_no, o.ad, o.soyad, o.bolum, d.ders_id, d.ders_adi
+                FROM ogrenci o
+                INNER JOIN ogrenci_ders od ON o.ogrenci_id = od.ogrenci_id
+                INNER JOIN ders_programi dp ON od.ders_id = dp.ders_id
+                INNER JOIN ders d ON dp.ders_id = d.ders_id
+                WHERE dp.ders_id IN (${dersIDs.map((_, index) => `@dersID${index}`).join(', ')})
+                `;
 
             dersIDs.forEach((dersID, index) => {
                 request.input(`dersID${index}`, sql.VarChar, dersID);
@@ -68,7 +68,7 @@ router.get('/students', async (req, res) => {
             res.status(500).json({ success: false, message: "An error occurred" });
         }
     } else {
-        return res.status(401).json({ valid: false, message: "Session not found" });
+        return res.json({ valid: false, message: "Session not found" });
     }
 });
 
@@ -99,9 +99,121 @@ router.get("/lessonInstructor", async(req, res) => {
             res.status(500).json({ valid: false, message: "Sunucuda bir hata oluştu" });
         }
     } else {
-        res.status(401).json({ valid: false, message: "Oturum bulunamadı" });
+        res.json({ valid: false, message: "Oturum bulunamadı" });
     }
 });
+
+
+router.get("/currentLessonAttendance", async (req, res) => {
+    try {
+        const currentDate = new Date();
+        const options = { timeZone: "Europe/Istanbul" };
+        const currentLocaleDate = currentDate.toLocaleDateString("tr-TR", options);
+        console.log("Şu anki tarih:", currentLocaleDate);
+
+        const currentTime = currentDate.getHours().toString().padStart(2, '0') + ':' +
+            currentDate.getMinutes().toString().padStart(2, '0') + ':' +
+            currentDate.getSeconds().toString().padStart(2, '0');
+            const currentDay = currentDate.getDay();
+            console.log("Bugünün günü:", currentDay);
+
+        console.log(currentTime);
+
+        const pool = await db.getConnection();
+        const request = pool.request();
+        
+    
+        console.log(currentDay);
+        request.input('userID', sql.VarChar, req.session.no);
+        request.input('currentTime', sql.VarChar, currentTime);
+        request.input('currentDay', sql.VarChar, currentDay.toString());
+        request.input('currentDate', sql.VarChar, currentLocaleDate);
+        
+
+        const lessonResult = await request.query(`
+        SELECT dp.*, d.ders_adi FROM ders_programi dp
+        INNER JOIN ders d ON dp.ders_id = d.ders_id
+        WHERE ders_gunu = @currentDay 
+        AND baslangic_saati <= @currentTime 
+        AND bitis_saati >= @currentTime
+        AND akademisyen_id = @userID
+        `);
+        const baslangicSaati = lessonResult.recordset[0].baslangic_saati;   
+        baslangicSaati.setHours(baslangicSaati.getHours() - 2);
+        const formattedBaslangicSaati = baslangicSaati.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+   
+        const bitisSaati = lessonResult.recordset[0].bitis_saati;
+        bitisSaati.setHours(bitisSaati.getHours() - 2);
+        const formattedBitisSaati = bitisSaati.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        console.log(lessonResult);
+        if (lessonResult.recordset.length === 1){
+            const result = await request.query(`
+            SELECT yl.*, d.ders_adi 
+            FROM yoklama_listeleri yl 
+            INNER JOIN ders_programi dp ON yl.ders_id = dp.ders_id 
+            INNER JOIN ders d ON dp.ders_id = d.ders_id 
+            WHERE yl.yoklama_tarihi = @currentDate 
+            AND dp.ders_gunu = @currentDay 
+            AND dp.baslangic_saati <= @currentTime 
+            AND dp.bitis_saati >= @currentTime
+            `);
+
+            if (result.recordset.length > 0){
+
+            const studentNumbers = result.recordset.map(row => row.ogrenci_no);
+
+            
+            const query = `
+                SELECT o.ogrenci_no, o.ad, o.soyad, o.bolum
+                FROM ogrenci o WHERE o.ogrenci_no IN (${studentNumbers.map((_, index) => `@studentNumber${index}`).join(', ')})
+            `;
+
+            studentNumbers.forEach((studentNumber, index) => {
+                request.input(`studentNumber${index}`, sql.VarChar, studentNumber);
+            });
+
+            const resultStudent = await request.query(query);
+            console.log(resultStudent);
+        
+           
+            
+            
+            let responseInfo = {
+                valid: true,
+                students: resultStudent.recordset.map((student, index) => ({
+                    ogrenci_no: student.ogrenci_no,
+                    ad: student.ad,
+                    soyad: student.soyad,
+                    bolum: student.bolum,
+                    derse_giris_saati: result.recordset[index].derse_giris_saati
+                })),
+                lesson: {
+                    ders_adi: result.recordset[0].ders_adi,
+                    ders_saati: formattedBaslangicSaati + "-" + formattedBitisSaati
+                }
+            };
+            
+            
+       
+        console.log(responseInfo);
+    
+        
+            // res.status(200).json({ valid: true, students : resultStudent.recordset , lesson: result.recordset[0].ders_adi});
+            res.json(responseInfo);
+
+        }else{
+            res.json({ valid: false, message: "Derste Öğrenci Yok", lesson: {ders_adi: lessonResult.recordset[0].ders_adi, ders_saati: formattedBaslangicSaati + "-" + formattedBitisSaati}});
+        }
+        }
+        else{
+            res.json({ valid: false, message: "Şu An Ders Yok" });
+        }        
+    } catch (error) {
+        console.error("Error retrieving attendance:", error);
+        res.status(500).send("Error retrieving attendance");
+    }
+});
+
 
 
 

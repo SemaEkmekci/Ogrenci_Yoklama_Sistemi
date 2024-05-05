@@ -42,6 +42,7 @@ const StudentTable = () => {
     const fetchStudentInfo = async () => {
         try {
             const response = await StudentTableServices.getStudentInfo();
+            
             setRecords(response.data.students);
         } catch (error) {
             console.error("Error fetching student info:", error);
@@ -62,9 +63,11 @@ const StudentTable = () => {
     };
 
     const dataToDisplay = keyword !== "" ? filteredRecords : records;
+    console.log(dataToDisplay);
 
     return (
         <div className='container'>
+            <h1 className="text-3xl font-semibold">Öğrenciler</h1>
             <div className='text-end mb-2'>
                 <input 
                     type="text" 

@@ -24,8 +24,6 @@ app.use(session({
     }
 }));
 
-
-
 app.use(express.json());
 
 const rfid = require("./routes/rfid");

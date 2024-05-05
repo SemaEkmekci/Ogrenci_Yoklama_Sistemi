@@ -1,79 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-
+import StudentTableServices from '../../services/InstructorPage/ActiveLessonTable';
 const ActiveLessonTable = () => {
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString("tr-TR");
     const columns = [
         {
             name: "Öğrenci No",
-            selector: row => row.no,
+            selector: row => row.ogrenci_no,
             sortable: true
         },
         {
             name: "Ad",
-            selector: row => row.name,
+            selector: row => row.ad,
             sortable: true
         },
         {
             name: "Soyad",
-            selector: row => row.surName,
+            selector: row => row.soyad,
             sortable: true
         },
         {
             name: "Bölüm",
-            selector: row => row.department,
+            selector: row => row.bolum,
+            sortable: true
+        },
+        {
+            name: "Derse Giriş Saati",
+            selector: row => row.derse_giris_saati,
             sortable: true
         }
     ];
 
-    const data = [
-        {
-            no: 21100011050,
-            name: "Sema",
-            surName: "EKMEK",
-            department: "Bilgisayar Mühendisliği"
-        },
-        {
-            no: 21100011051,
-            name: "Sena",
-            surName: "İncekenar",
-            department: "Makine Mühendisliği"
-        },
-        {
-            no: 21100011052,
-            name: "Ali",
-            surName: "Şeker",
-            department: "Elektrik Elektronik Mühendisliği"
-        },
-        {
-            no: 21100011050,
-            name: "Sema",
-            surName: "EKMEK",
-            department: "Bilgisayar Mühendisliği"
+    const [records, setRecords] = useState([]);
+    const [filteredRecords, setFilteredRecords] = useState([]);
+    const [keyword, setKeyword] = useState("");
+    const [noRecords, setNoRecords] = useState("");
+    const [activeLesson, setActiveLesson] = useState("");
+    const [lessonTime, setLessonTime] = useState("");
+
+
+    useEffect(() => {
+
+        fetchStudentInfo();
+        const interval = setInterval(() => {
+            fetchStudentInfo();
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const fetchStudentInfo = async () => {
+        try {
+            const response = await StudentTableServices.getStudentInfo();
+            console.log(response);
+            if (response.data.valid){
+                
+                setRecords(response.data.students);
+            }else{
+                setActiveLesson(response.data.lesson.ders_adi)
+                setLessonTime(response.data.lesson.ders_saati)
+                setNoRecords(response.data.message)
+            }
+
+            } catch (error) {
+           
+            console.error("Error fetching student info:", error);
+
         }
-    ];
-
-
-    const [records, setRecords] = useState(data);
-
+    };
 
     const handleFilter = e => {
         const keyword = e.target.value.toLowerCase();
-        const filteredData = data.filter(
+        setKeyword(keyword);
+        const filteredData = records.filter(
             item =>
-                item.no.toString().toLowerCase().includes(keyword) ||
-                item.name.toLowerCase().includes(keyword) ||
-                item.surName.toLowerCase().includes(keyword) ||
-                item.department.toLowerCase().includes(keyword)
+                item.ogrenci_no.toString().toLowerCase().includes(keyword) ||
+                item.ad.toLowerCase().includes(keyword) ||
+                item.soyad.toLowerCase().includes(keyword) ||
+                item.bolum.toLowerCase().includes(keyword)
         );
-        setRecords(filteredData);
+        setFilteredRecords(filteredData);
     };
+
+  
+    
+    const dataToDisplay = keyword !== "" ? filteredRecords : records;
+    console.log(dataToDisplay);
     
     return (
         <div className='container'>
-        <h1 className="text-3xl font-bold">Aktif Ders Yoklaması</h1>
-        <h1 className="text-xl font-semibold">{formattedDate}</h1>
+        <h1 className="text-3xl font-semibold">Aktif Ders Yoklaması</h1>
+        <h1 className="text-xl font-semibold">{formattedDate} - {activeLesson}</h1>
+        <h4>{lessonTime}</h4>
+
 
         <div className='text-end mb-2'>
             <input 
@@ -86,9 +106,10 @@ const ActiveLessonTable = () => {
         <div className="overflow-x-auto">
             <DataTable
                 columns={columns}
-                data={records}
+                data={dataToDisplay}
                 searchable={true}
                 pagination={true}
+                noDataComponent = {<div className="text-center p-4">{noRecords}</div>}
                 fixedHeader
                 responsive
             />
