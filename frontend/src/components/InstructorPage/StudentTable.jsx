@@ -28,7 +28,7 @@ const StudentTable = () => {
             name: "Aldığı Ders",
             selector: row => row.ders_adi,
             sortable: true
-        }
+        }, 
     ];
 
     const [records, setRecords] = useState([]);

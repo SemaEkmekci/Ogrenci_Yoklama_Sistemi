@@ -104,6 +104,7 @@ router.get("/lessonInstructor", async(req, res) => {
 });
 
 
+
 router.get("/currentLessonAttendance", async (req, res) => {
     try {
         const currentDate = new Date();
@@ -138,15 +139,16 @@ router.get("/currentLessonAttendance", async (req, res) => {
         AND bitis_saati >= @currentTime
         AND akademisyen_id = @userID
         `);
-        const baslangicSaati = lessonResult.recordset[0].baslangic_saati;   
-        baslangicSaati.setHours(baslangicSaati.getHours() - 2);
-        const formattedBaslangicSaati = baslangicSaati.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-   
-        const bitisSaati = lessonResult.recordset[0].bitis_saati;
-        bitisSaati.setHours(bitisSaati.getHours() - 2);
-        const formattedBitisSaati = bitisSaati.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-        console.log(lessonResult);
+       
         if (lessonResult.recordset.length === 1){
+            const baslangicSaati = lessonResult.recordset[0].baslangic_saati;   
+            baslangicSaati.setHours(baslangicSaati.getHours() - 2);
+            const formattedBaslangicSaati = baslangicSaati.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+       
+            const bitisSaati = lessonResult.recordset[0].bitis_saati;
+            bitisSaati.setHours(bitisSaati.getHours() - 2);
+            const formattedBitisSaati = bitisSaati.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            console.log(lessonResult);
             const result = await request.query(`
             SELECT yl.*, d.ders_adi 
             FROM yoklama_listeleri yl 
@@ -202,11 +204,11 @@ router.get("/currentLessonAttendance", async (req, res) => {
             res.json(responseInfo);
 
         }else{
-            res.json({ valid: false, message: "Derste Öğrenci Yok", lesson: {ders_adi: lessonResult.recordset[0].ders_adi, ders_saati: formattedBaslangicSaati + "-" + formattedBitisSaati}});
+            res.json({ valid: true, message: "Derste Öğrenci Yok", lesson: {ders_adi: lessonResult.recordset[0].ders_adi, ders_saati: formattedBaslangicSaati + "-" + formattedBitisSaati}});
         }
         }
         else{
-            res.json({ valid: false, message: "Şu An Ders Yok" });
+            res.json({ valid: true, message: "Şu An Ders Yok" });
         }        
     } catch (error) {
         console.error("Error retrieving attendance:", error);
@@ -215,6 +217,52 @@ router.get("/currentLessonAttendance", async (req, res) => {
 });
 
 
+
+router.post('/attendanceDate', async (req, res) => {
+        const { lessonName} = req.body;
+        console.log("LESSON NAME", lessonName);
+        const pool = await db.getConnection();
+        const request = pool.request();
+        request.input('lessonName', sql.VarChar, lessonName);
+        const result = await request.query('SELECT yoklama_tarihi FROM yoklama_listeleri WHERE ders_id = (SELECT d.ders_id FROM ders d WHERE d.ders_adi = @lessonName)');
+      
+        const uniqueDates = new Set();
+        result.recordset.forEach(record => {
+            uniqueDates.add(record.yoklama_tarihi);
+        });
+        
+        const uniqueDatesArray = Array.from(uniqueDates);
+        return res.json({ message: "success", dates: uniqueDatesArray });
+});
+
+
+router.post('/attendanceList', async (req, res) =>  {
+  
+        const { lessonName, selectedDate} = req.body;
+        console.log(lessonName);
+        const pool = await db.getConnection();
+        const request = pool.request();
+        request.input('userID', sql.VarChar, req.session.no);
+        request.input('lessonName', sql.VarChar, lessonName);
+        request.input('selectedDate', sql.VarChar, selectedDate);
+
+        const query = `
+                SELECT yl.yoklama_tarihi, yl.ogrenci_no, o.ad, o.soyad, yl.derse_giris_saati, yl.dersten_cikis_saati from yoklama_listeleri yl
+                inner join ogrenci o on yl.ogrenci_no = o.ogrenci_no  
+                where yl.ders_id = (
+                select d.ders_id
+                FROM ders d
+                WHERE d.ders_adi = @lessonName) AND yl.yoklama_tarihi = @selectedDate
+            `;
+
+            const result = await request.query(query);
+
+            console.log(result);
+        return res.json({ message: "success", attendanceList: result.recordset });
+
+
+   
+  });
 
 
 router.post("/login", async (req, res) => {

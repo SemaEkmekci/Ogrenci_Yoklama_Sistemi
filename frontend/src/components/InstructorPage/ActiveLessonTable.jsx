@@ -55,14 +55,11 @@ const ActiveLessonTable = () => {
             const response = await StudentTableServices.getStudentInfo();
             console.log(response);
             if (response.data.valid){
-                
-                setRecords(response.data.students);
-            }else{
                 setActiveLesson(response.data.lesson.ders_adi)
                 setLessonTime(response.data.lesson.ders_saati)
+                setRecords(response.data.students);
                 setNoRecords(response.data.message)
             }
-
             } catch (error) {
            
             console.error("Error fetching student info:", error);
@@ -73,15 +70,21 @@ const ActiveLessonTable = () => {
     const handleFilter = e => {
         const keyword = e.target.value.toLowerCase();
         setKeyword(keyword);
-        const filteredData = records.filter(
-            item =>
-                item.ogrenci_no.toString().toLowerCase().includes(keyword) ||
-                item.ad.toLowerCase().includes(keyword) ||
-                item.soyad.toLowerCase().includes(keyword) ||
-                item.bolum.toLowerCase().includes(keyword)
-        );
-        setFilteredRecords(filteredData);
+
+        if (records && records.length > 0) {
+            const filteredData = records.filter(
+                item =>
+                    item.ogrenci_no.toString().toLowerCase().includes(keyword) ||
+                    item.ad.toLowerCase().includes(keyword) ||
+                    item.soyad.toLowerCase().includes(keyword) ||
+                    item.bolum.toLowerCase().includes(keyword)
+            );
+            setFilteredRecords(filteredData);
+        } else {
+            setFilteredRecords([]);
+        }
     };
+    
 
   
     

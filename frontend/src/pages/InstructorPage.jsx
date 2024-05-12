@@ -13,7 +13,7 @@ const InstructorPage = () => {
   const [surname, setSurname] = useState('');
   const [department, setDepartment] = useState('');
   const [lessons, setLessons] = useState([]);
-  const [showCards, setShowCards] = useState(false);
+  const [showCards, setShowCards] = useState(true);
   const [showStudentTable, setStudentTable] = useState(false);
   const [showActiveLesson, setActiveLesson] = useState(false);
 
@@ -77,7 +77,6 @@ const InstructorPage = () => {
         handleShowCards={handleShowCards}
         handleStudentTable={handleStudentTable}
         handleActiveLesson={handleActiveLesson}
-
       />
 
       </div>
@@ -93,7 +92,7 @@ const InstructorPage = () => {
             imageUrl={image.image[index].url}
             heading={lesson.ders_adi}
             description={lesson.bolum_adi}
-          />
+          />       
         </div>
       ))
     }   

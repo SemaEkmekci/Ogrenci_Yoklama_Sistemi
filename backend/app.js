@@ -29,9 +29,11 @@ app.use(express.json());
 const rfid = require("./routes/rfid");
 const student = require("./routes/student");
 const instructor = require("./routes/instructor");
+const attendance = require("./routes/attendance");
 
 app.use("/rfid", rfid);
 app.use("/student", student);
 app.use("/instructor", instructor);
+app.use("/attendance", attendance);
 
 app.listen(config.port, () => console.log(`Server is running on http://localhost:${config.port}`));

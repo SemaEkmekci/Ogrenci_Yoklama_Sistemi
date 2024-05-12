@@ -1,18 +1,18 @@
-const mime = require('mime')
-const path = require('path')
-const xl = require('excel4node')
+const express = require("express");
+const router = express.Router();
+const sql = require("mssql");
+const db = require("../data/db");
+const xl = require('excel4node');
 
-const router = express.Router()
+router.use(express.json());
 
-const headerColumns = ["Name", "Email", "Phone"]
+router.get("/downloadAttendance", (req, res, next) => {
+    const headerColumns = ["Öğrenci NO", "Öğrenci Ad", "Öğrenci Soyad", "Giriş Saati", "Çıkış Saati"];
 
-const data = [
-    { name: "Yasin", email: "aaaa@gmail.com", phone: "055555" },
-    { name: "Ali", email: "bbb@gmail.com", phone: "0552232" },
-
-]
-
-const createExcelFile = () => {
+    const data = [
+        { studentNo: "21100011050", name: "Sema", surname: "EKMEK", checkInTime: "18:36:04", checkOutTime: "22.01.21" },
+        { studentNo: "21100011027", name: "Sena", surname: "İNCEKENAR", checkInTime: "20:42:04", checkOutTime: "22.01.30" },
+    ];
     const wb = new xl.Workbook()
     const ws = wb.addWorksheet("Kullanicilar")
     let colIndex = 1
@@ -27,27 +27,14 @@ const createExcelFile = () => {
         })
         rowIndex++;
     })
-    wb.write("kullanicilar.xlsx")
 
-}
+    const fileName = "yoklama.xlsx";
 
-router.get("/kullaniciExcel", (req, res, next) => {
-    createExcelFile()
-    const file = __dirname + "/kullanicilar.xlsx"
-    const fileName = path.basename(file)
-    const mimeType = mime.getType(file)
-    res.setHeader("Content-Disposition", "attachment;filename=" + fileName)
-    res.setHeader("Content-Type", mimeType)
+    const fileStream = wb.writeToBuffer();
 
-    setTimeout(() => {
-        res.download(file)
-    }, 2000);
+    res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.send(fileStream);
+});
 
-
-
-})
-
-app.use('/', router)
-app.listen(3000, () => {
-
-})
+module.exports = router;
