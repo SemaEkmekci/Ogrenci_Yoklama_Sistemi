@@ -29,11 +29,13 @@ For this project assignment, integration of RFID-RC522 and OLED display with ESP
 | SCK        | D22         |
 | SDA        | D21         |
 
-### Fritzing Scheme
-![OYS_ODEV_CIZIM_2](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/d6a61153-dc8b-47ad-8edb-f99816dd599c)
+### Fritzing Scheme and Real Image Comparison
 
-### ------------------------------------------------------------------------------------------------------------------------
-![gercek_resim](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/7b8090c3-4f2d-4034-9d6f-bdbf90fe9437)
+<div style="display: flex; justify-content: space-around;">
+    <img src="https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/d6a61153-dc8b-47ad-8edb-f99816dd599c" alt="Fritzing Scheme" width="400"/>
+    <img src="https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/7b8090c3-4f2d-4034-9d6f-bdbf90fe9437" alt="Real Image" width="400"/>
+</div>
+
 
 ## Project Description
 
