@@ -7,18 +7,27 @@ For this project assignment, integration of RFID-RC522 and OLED display with ESP
 
 ## Connection Diagrams
 
-### RFID-RC522 - ESP32                     |   OLED I2C - ESP32
+### RFID-RC522 - ESP32
 
-| RFID-RC522 | ESP32       |              | OLED I2C   | ESP32       |      
-|------------|-------------|              |------------|-------------|
-| SDA        | D5          |              | GND        | GND         |
-| SCK        | D18         |              | VDD        | 3.3V        |
-| MOSI       | D23         |              | SCK        | D22         |
-| MISO       | D19         |              | SDA        | D21         |
-| IRQ        | Free        |              |            |             |
-| GND        | GND         |              |            |             |
-| RST        | D4          |              |            |             |
-| 3.3V       | 3.3V        |              |            |             |
+| RFID-RC522 | ESP32       |
+|------------|-------------|
+| SDA        | D5          |
+| SCK        | D18         |
+| MOSI       | D23         |
+| MISO       | D19         |
+| IRQ        | Free        |
+| GND        | GND         |
+| RST        | D4          |
+| 3.3V       | 3.3V        |
+
+### OLED I2C - ESP32
+
+| OLED I2C   | ESP32       |
+|------------|-------------|
+| GND        | GND         |
+| VDD        | 3.3V        |
+| SCK        | D22         |
+| SDA        | D21         |
 
 
 
