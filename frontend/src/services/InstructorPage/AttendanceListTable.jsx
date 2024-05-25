@@ -14,6 +14,6 @@ AttendanceListTableInfo.postDateInfo = (lessonName) => {
     return axios.post('http://localhost:9000/instructor/attendanceDate', {
       lessonName: lessonName
     });
-  }
+}
 
 export default AttendanceListTableInfo;

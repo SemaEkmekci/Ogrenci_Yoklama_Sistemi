@@ -38,21 +38,35 @@ router.get('/students', async (req, res) => {
             console.log(result);
 
             const dersIDs = result.recordset.map(row => row.ders_id);
-          
-            // const query = `
-            //     SELECT o.ogrenci_no, o.ad, o.soyad, o.bolum
-            //     FROM ogrenci o
-            //     INNER JOIN ogrenci_ders od ON o.ogrenci_id = od.ogrenci_id
-            //     INNER JOIN ders_programi dp ON od.ders_id = dp.ders_id
-            //     WHERE dp.ders_id IN (${dersIDs.map((_, index) => `@dersID${index}`).join(', ')})
-            // `;
+            
             const query = `
-                SELECT o.ogrenci_no, o.ad, o.soyad, o.bolum, d.ders_id, d.ders_adi
-                FROM ogrenci o
-                INNER JOIN ogrenci_ders od ON o.ogrenci_id = od.ogrenci_id
-                INNER JOIN ders_programi dp ON od.ders_id = dp.ders_id
-                INNER JOIN ders d ON dp.ders_id = d.ders_id
-                WHERE dp.ders_id IN (${dersIDs.map((_, index) => `@dersID${index}`).join(', ')})
+            SELECT 
+            o.ogrenci_no, 
+            o.ad, 
+            o.soyad, 
+            o.bolum, 
+            d.ders_id, 
+            d.ders_adi,
+            COUNT(dev.devamsizlik_id) AS toplam_devamsizlik
+        FROM 
+            ogrenci o
+        INNER JOIN 
+            ogrenci_ders od ON o.ogrenci_id = od.ogrenci_id
+        INNER JOIN 
+            ders_programi dp ON od.ders_id = dp.ders_id
+        INNER JOIN 
+            ders d ON dp.ders_id = d.ders_id
+        LEFT JOIN 
+            devamsizlik dev ON o.ogrenci_no = dev.ogrenci_no AND d.ders_id = dev.ders_id
+        WHERE 
+            dp.ders_id IN (${dersIDs.map((_, index) => `@dersID${index}`).join(', ')})
+        GROUP BY 
+            o.ogrenci_no, 
+            o.ad, 
+            o.soyad, 
+            o.bolum, 
+            d.ders_id, 
+            d.ders_adi;        
                 `;
 
             dersIDs.forEach((dersID, index) => {
@@ -259,9 +273,6 @@ router.post('/attendanceList', async (req, res) =>  {
 
             console.log(result);
         return res.json({ message: "success", attendanceList: result.recordset });
-
-
-   
   });
 
 

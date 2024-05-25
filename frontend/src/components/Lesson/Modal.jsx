@@ -1,19 +1,22 @@
 import React, { useRef, useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import AttendanceTableServices from '../../services/InstructorPage/AttendanceListTable';
 
-const Modal = ({ isOpen, onClose, heading, description,  selectedDate, setSelectedDate }) => {
+
+import AttendanceTableServices from '../../services/InstructorPage/AttendanceListTable';
+import AttendanceDownloadServices from '../../services/InstructorPage/DownloadAttendanceList';
+const Modal = ({ isOpen, onClose, heading, description }) => {
   const modalRef = useRef(null);
   const [dateOptions, setDateOptions] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
   const [records, setRecords] = useState([]);
 
   const handleAttendanceDate = async (heading) => {
     try {
       const response = await AttendanceTableServices.postDateInfo(heading);
-      setDateOptions(response.data.dates)
+      setDateOptions(response.data.dates);
       console.log(response);
     } catch (error) {
-      console.error('Failed to login:', error);
+      console.error('Failed to get date info:', error);
     }
   };
 
@@ -62,19 +65,34 @@ const Modal = ({ isOpen, onClose, heading, description,  selectedDate, setSelect
     },
     {
       name: 'Çıkış Saati',
-      selector:row => row.dersten_cikis_saati,
+      selector: row => row.dersten_cikis_saati,
       sortable: true,
     },
   ];
 
-
   const handleAttendanceList = async (heading, selectedDate) => {
     try {
-      const response = await AttendanceTableServices.postLessonInfo(heading,selectedDate);
+      const response = await AttendanceTableServices.postLessonInfo(heading, selectedDate);
       console.log(response);
-      setRecords(response.data.attendanceList)
+      setRecords(response.data.attendanceList);
     } catch (error) {
-      console.error('Failed to login:', error);
+      console.error('Failed to get attendance list:', error);
+    }
+  };
+
+  const handleDownloadAttendanceList = async (heading, selectedDate) => {
+    try {
+      console.log(heading);
+      const response = await AttendanceDownloadServices.downloadAttendanceList(heading, selectedDate);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${heading}-${selectedDate}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Yoklama listesi indirilken hata oluştu.', error);
     }
   };
 
@@ -86,7 +104,7 @@ const Modal = ({ isOpen, onClose, heading, description,  selectedDate, setSelect
           <button className="text-gray-600 hover:text-gray-800" onClick={onClose}>X</button>
         </div>
         <p className="text-gray-700 mb-4">{description}</p>
-        
+
         <select
           className="block w-full p-2 bg-gray-100 rounded-md mb-4"
           value={selectedDate}
@@ -95,7 +113,7 @@ const Modal = ({ isOpen, onClose, heading, description,  selectedDate, setSelect
             handleAttendanceList(heading, e.target.value);
           }}
         >
-           <option value="" disabled={true} hidden={true}>Tarih Seç</option>
+          <option value="" disabled={true} hidden={true}>Tarih Seç</option>
           {dateOptions.map((date, index) => (
             <option key={index} value={date}>{date}</option>
           ))}
@@ -106,12 +124,13 @@ const Modal = ({ isOpen, onClose, heading, description,  selectedDate, setSelect
             data={records}
             searchable={true}
             pagination={true}
+            noDataComponent={<div className="text-center p-4">Tarih Seçiniz</div>}
             fixedHeader
             responsive
           />
         </div>
         <div className="flex justify-between">
-          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Yoklama Listesi İndir</button>
+          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded" onClick={() => handleDownloadAttendanceList(heading, selectedDate)}>Yoklama Listesi İndir</button>
         </div>
       </div>
     </div>
@@ -119,4 +138,3 @@ const Modal = ({ isOpen, onClose, heading, description,  selectedDate, setSelect
 };
 
 export default Modal;
-

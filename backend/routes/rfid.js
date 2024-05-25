@@ -46,12 +46,11 @@ router.post("/ID", async (req, res) => {
     AND bitis_saati >= @currentTime 
     AND ders_programi.sinif_id = (SELECT sinif_id FROM sinif WHERE sinif_adi = @currentClass)
 `);
-
-    console.log(lessonResult);
-
     request.input('userID', sql.VarChar, data.userID);
-    request.input('lessonID', sql.VarChar, lessonResult.recordset[0].ders_id);
     const studentInfoResult = await request.query('SELECT ogrenci_no, ad, soyad, bolum FROM ogrenci WHERE ogrenci_id = @userID');
+    console.log(lessonResult);
+    if (lessonResult.recordset.length === 1) {
+    request.input('lessonID', sql.VarChar, lessonResult.recordset[0].ders_id);
     console.log(data.userID);
     console.log(lessonResult.recordset[0].ders_id);
 
@@ -59,7 +58,7 @@ router.post("/ID", async (req, res) => {
     console.log(studentInfoResult);
     console.log(result);
 
-if (lessonResult.recordset.length === 1) {
+
 
     const bitisSaatiString = lessonResult.recordset[0].bitis_saati.toISOString().split("T");
     if (result.recordset.length === 1) {
@@ -74,7 +73,7 @@ if (lessonResult.recordset.length === 1) {
                 lessonState: "on",
                 studentState: "off",
                 lessonName: lessonResult.recordset[0].ders_id,
-                msg: "Yoklamanız Alındı"
+                msg: "Yoklamaniz Alindi"
                 });
 
         }
@@ -118,7 +117,7 @@ if (lessonResult.recordset.length === 1) {
     
 }
     let studentNo = studentInfoResult.recordset[0].ogrenci_no;
-    let hiddenStudentNo = studentNo.substring(0, 3) + '*'.repeat(studentNo.length - 5) + studentNo.substring(studentNo.length - 2);
+    let hiddenStudentNo = studentNo.substring(0, 3) + '*'.repeat(studentNo.length - 6) + studentNo.substring(studentNo.length - 2);
     let studentName = studentInfoResult.recordset[0].ad;
     let hiddenStudentName = studentName.substring(0, 4) + '*'.repeat(3)
     let studentSurname = studentInfoResult.recordset[0].soyad;

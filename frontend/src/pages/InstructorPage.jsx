@@ -8,6 +8,7 @@ import StudentTable from '../components/InstructorPage/StudentTable';
 import ActiveLessonTable from '../components/InstructorPage/ActiveLessonTable';
 
 const InstructorPage = () => {
+  
   const [academicTitle, setTitle] = useState('');
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -19,7 +20,6 @@ const InstructorPage = () => {
 
   const navigate = useNavigate(); 
   useEffect(() => {
-    
     InstructorInfo.getInstructorInfo()
       .then(res => {
         console.log(res);
@@ -83,7 +83,7 @@ const InstructorPage = () => {
      
       <div className="w-full bg-gray-100 p-8">
       <div className="max-w-7xl ml-64">
-      {showCards && <h1 className="text-3xl font-semibold mb-8">Derslerim</h1>}
+      {showCards && <h1 className="text-3xl font-semibold mb-8">Dersler</h1>}
   <div className="flex flex-wrap">
     {showCards && 
       lessons.map((lesson, index) => (

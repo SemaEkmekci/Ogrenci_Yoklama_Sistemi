@@ -29,7 +29,36 @@ const StudentTable = () => {
             selector: row => row.ders_adi,
             sortable: true
         }, 
+        {
+            name: "Devamsızlık Bilgisi",
+            selector: row => row.toplam_devamsizlik,
+            sortable: true
+        }, 
     ];
+    const conditionalRowStyles = [
+        {
+            when: row => row.toplam_devamsizlik < 4,
+            style: {
+                backgroundColor: '#c3e6cb', // Light green
+                color: '#155724',
+            },
+        },
+        {
+            when: row => row.toplam_devamsizlik === 4,
+            style: {
+                backgroundColor: '#ffeeba', // Light orange
+                color: '#856404',
+            },
+        },
+        {
+            when: row => row.toplam_devamsizlik > 4,
+            style: {
+                backgroundColor: '#f5c6cb', // Light red
+                color: '#721c24',
+            },
+        },
+    ];
+
 
     const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
@@ -82,6 +111,7 @@ const StudentTable = () => {
                     data={dataToDisplay}
                     searchable={true}
                     pagination={true}
+                    conditionalRowStyles={conditionalRowStyles}
                     fixedHeader
                     responsive
                 />
