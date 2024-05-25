@@ -29,6 +29,12 @@ For this project assignment, integration of RFID-RC522 and OLED display with ESP
 | SCK        | D22         |
 | SDA        | D21         |
 
+### Fritzing Scheme
+![OYS_ODEV_CIZIM_2](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/d6a61153-dc8b-47ad-8edb-f99816dd599c)
+
+### ------------------------------------------------------------------------------------------------------------------------
+![gercek_resim](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/7b8090c3-4f2d-4034-9d6f-bdbf90fe9437)
+
 ## Project Description
 
 Within the scope of the project, the RFID-RC522 module will be connected and utilized via digital pins on the ESP32. Similarly, the OLED display will also be integrated using the I2C (Two-Wire Interface) connection points of the ESP32.
