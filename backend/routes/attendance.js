@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const xl = require('excel4node');
+const xl = require("excel4node");
 const db = require("../data/db");
 const sql = require("mssql");
 
@@ -8,13 +8,19 @@ router.use(express.json());
 
 router.post("/downloadAttendance", async (req, res, next) => {
   try {
-    const headerColumns = ["Öğrenci NO", "Öğrenci Ad", "Öğrenci Soyad", "Giriş Saati", "Çıkış Saati"];
+    const headerColumns = [
+      "Öğrenci NO",
+      "Öğrenci Ad",
+      "Öğrenci Soyad",
+      "Giriş Saati",
+      "Çıkış Saati",
+    ];
     const { lessonName, selectedDate } = req.body;
 
     const pool = await db.getConnection();
     const request = pool.request();
-    request.input('lessonName', sql.VarChar, lessonName);
-    request.input('selectedDate', sql.VarChar, selectedDate);
+    request.input("lessonName", sql.VarChar, lessonName);
+    request.input("selectedDate", sql.VarChar, selectedDate);
 
     const query = `
       SELECT yl.ogrenci_no, o.ad, o.soyad, yl.derse_giris_saati, yl.dersten_cikis_saati 
@@ -51,8 +57,8 @@ router.post("/downloadAttendance", async (req, res, next) => {
 
     res.download(filePath, "attendance_list.xlsx");
   } catch (error) {
-    console.error('Failed to generate attendance list:', error);
-    res.status(500).send('Failed to generate attendance list');
+    console.error("Failed to generate attendance list:", error);
+    res.status(500).send("Failed to generate attendance list");
   }
 });
 
