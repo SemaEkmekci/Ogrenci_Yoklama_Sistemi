@@ -5,7 +5,29 @@ __NEÜ Bilgisayar Mühendisliği 3.sınıf Bahar Dönemi Seçmeli Gömülü Sist
 
 For this project assignment, integration of RFID-RC522 and OLED display with ESP32 microcontroller will be realized.
 
-## Connection Diagrams
+
+
+## Kullanılan Teknolojiler
+
+### Gömülü Yazılım
+
+- **Arduino:** Arduino, Wiring tabanlı C/C++'a çok yakın bir dil ile programlama dilidir. Arduino kaynak kod dosyalarına (*.ino) Sketch (taslak) adı verilir.
+- **Arduino IDE:** Processing temel alınarak geliştirilmiştir. Platform bağımsızdır (Linux, Mac, Windows). Alt seviyede GCC derleyicisini kullanır. Arduino IDE Java ile geliştirilmiştir. Açık kaynaklıdır.
+
+### Frontend Yazılım
+
+- **React.js:** React, bileşenlere dayalı kullanıcı arayüzleri oluşturmaya yönelik ücretsiz ve açık kaynaklı bir ön uç JavaScript kitaplığıdır.
+- **Tailwind CSS:** Tailwind CSS açık kaynaklı bir CSS çerçevesidir.
+
+### Backend Yazılım
+
+- **Node.js:** Node.js, geliştiricilerin sunucular, web uygulamaları, komut satırı araçları ve komut dosyaları oluşturmasına olanak tanıyan ücretsiz, açık kaynaklı, platformlar arası bir JavaScript çalışma zamanı ortamıdır.
+
+### Veritabanı
+
+- **MSSQL:** Microsoft SQL Server, Microsoft tarafından geliştirilen ve yönetilen bir ilişkisel veritabanı yönetim sistemidir. SQL Server, büyük ve karmaşık veritabanlarını depolamak, yönetmek, sorgulamak ve işlemek için kullanılan bir yazılım ürünüdür. Veri depolama, veri güvenliği, yedekleme, geri yükleme, veri entegrasyonu, analiz ve raporlama gibi çeşitli veritabanı yönetimi işlevlerini destekler.
+
+## Bağlantı Şemaları
 
 ### RFID-RC522 - ESP32
 
@@ -32,7 +54,7 @@ For this project assignment, integration of RFID-RC522 and OLED display with ESP
 
 
 
-### Fritzing Scheme and Real Image Comparison
+## Fritzing Scheme and Real Image Comparison
 
 <div style="display: flex; justify-content: space-around;">
     <img src="https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/d6a61153-dc8b-47ad-8edb-f99816dd599c" alt="Fritzing Scheme" width="400"/>
