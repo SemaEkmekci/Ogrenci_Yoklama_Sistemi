@@ -5,6 +5,14 @@ __NEÜ Bilgisayar Mühendisliği 3.sınıf Bahar Dönemi Seçmeli Gömülü Sist
 
 For this project assignment, integration of RFID-RC522 and OLED display with ESP32 microcontroller will be realized.
 
+## frontend
+    cd frontend
+    npm install
+    npm start
+## backend
+    cd backend
+    npm install
+    npm start
 
 
 ## Kullanılan Teknolojiler
@@ -73,6 +81,9 @@ Bu çalışmada, öğrenci devamsızlık süreçlerinin düzenli ve etkin bir ş
 ## Web Interface
 ### Akademisyen
 ![1](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/7150a680-3ee9-4dcd-897f-28e8d634ca70)
+
+![image](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/59515ba7-76e6-407a-a1f3-eafd1c4f6026)
+
 
 ### Öğrenci
 ![image](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/b5b4b30f-bcfe-4d15-b28a-0e57be5bb88f)
