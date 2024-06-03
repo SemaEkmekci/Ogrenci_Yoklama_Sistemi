@@ -63,6 +63,7 @@ const StudentTable = () => {
   const [records, setRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
   const [keyword, setKeyword] = useState("");
+  const [filterColor, setFilterColor] = useState("");
 
   useEffect(() => {
     fetchStudentInfo();
@@ -88,11 +89,14 @@ const StudentTable = () => {
   const handleFilter = (e) => {
     const keyword = normalizeText(e.target.value);
     setKeyword(keyword);
+    filterData(keyword, filterColor);
+  };
 
-    if (keyword === "") {
-      setFilteredRecords(records);
-    } else {
-      const filteredData = records.filter(
+  const filterData = (keyword, color) => {
+    let filteredData = records;
+
+    if (keyword) {
+      filteredData = filteredData.filter(
         (item) =>
           normalizeText(item.ogrenci_no.toString()).includes(keyword) ||
           normalizeText(item.ad).includes(keyword) ||
@@ -101,14 +105,64 @@ const StudentTable = () => {
           normalizeText(item.ders_adi).includes(keyword) ||
           normalizeText(item.toplam_devamsizlik.toString()).includes(keyword)
       );
-      setFilteredRecords(filteredData);
     }
+
+    if (color) {
+      filteredData = filteredData.filter((item) => {
+        if (color === "green") return item.toplam_devamsizlik < 4;
+        if (color === "yellow") return item.toplam_devamsizlik === 4;
+        if (color === "red") return item.toplam_devamsizlik > 4;
+        return true; 
+      });
+    }
+
+    setFilteredRecords(filteredData);
   };
 
-  const paginationOptions = {
-    rowsPerPageText: 'Sayfa başına satır:',
-    rangeSeparatorText: ' / ',
+  const handleColorFilter = (color) => {
+    setFilterColor(color);
+    filterData(keyword, color);
   };
+
+  const dataToDisplay = keyword !== "" || filterColor !== "" ? filteredRecords : records;
+
+  const paginationOptions = {
+    rowsPerPageText: "Sayfa başına satır:",
+    rangeSeparatorText: " / ",
+  };
+
+  const ColorFilterButtons = () => (
+    <div className="flex items-center space-x-4">
+      <div className="flex items-center">
+        <button
+          className="w-6 h-6 bg-white border-2 border-gray-400"
+          onClick={() => handleColorFilter("")}
+        ></button>
+        <span className="ml-2 text-sm">Hepsi</span>
+      </div>
+      <div className="flex items-center">
+        <button
+          className="w-6 h-6 bg-green-500 border-2 border-gray-400"
+          onClick={() => handleColorFilter("green")}
+        ></button>
+        <span className="ml-2 text-sm">Geçti</span>
+      </div>
+      <div className="flex items-center">
+        <button
+          className="w-6 h-6 bg-yellow-500 border-2 border-gray-400"
+          onClick={() => handleColorFilter("yellow")}
+        ></button>
+        <span className="ml-2 text-sm">Sınırda</span>
+      </div>
+      <div className="flex items-center">
+        <button
+          className="w-6 h-6 bg-red-500 border-2 border-gray-400"
+          onClick={() => handleColorFilter("red")}
+        ></button>
+        <span className="ml-2 text-sm">Kaldı</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className="container">
@@ -122,16 +176,20 @@ const StudentTable = () => {
           onChange={handleFilter}
         />
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
         <DataTable
           columns={columns}
-          data={filteredRecords}
+          data={dataToDisplay}
           pagination={true}
           paginationComponentOptions={paginationOptions}
           conditionalRowStyles={conditionalRowStyles}
           fixedHeader
           responsive
+          noDataComponent={<div className="text-center p-4">Kayıt bulunamadı</div>}
         />
+        <div className="absolute bottom-0 left-0 p-4 flex items-center space-x-4">
+          <ColorFilterButtons />
+        </div>
       </div>
     </div>
   );

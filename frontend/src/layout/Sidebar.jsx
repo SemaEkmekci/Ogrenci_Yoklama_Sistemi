@@ -10,6 +10,7 @@ import {
   faUserTie,
   faBars,
   faTimes,
+  faFileExcel
 } from "@fortawesome/free-solid-svg-icons";
 import SidebarService from "../services/Sidebar/Sidebar";
 
@@ -95,6 +96,15 @@ const Sidebar = ({
             >
               <FontAwesomeIcon icon={faChartBar} />
               <span className="ml-1">Aktif Ders Yoklaması</span>
+            </a>
+          </li>
+          <li className="mb-2 cursor-pointer">
+            <a
+              className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
+              // onClick={handleStudentTable}
+            >
+              <FontAwesomeIcon icon={faFileExcel} />
+              <span className="ml-1">Öğrenci Ekle</span>
             </a>
           </li>
         </ul>
