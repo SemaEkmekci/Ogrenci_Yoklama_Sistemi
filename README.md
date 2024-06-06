@@ -80,6 +80,8 @@ In this project, an electronic attendance system has been developed aiming to ma
 
 Bu çalışmada, öğrenci devamsızlık süreçlerinin düzenli ve etkin bir şekilde yönetilmesini hedefleyen bir elektronik yoklama sistemi geliştirilmiştir. Bu sistem, web servisler aracılığıyla yoklama bilgilerinin sorgulanmasını ve giriş-çıkış zamanlarının kaydedilmesini sağlar. Sınıflara yerleştirilen uç birimlerinde RFID modülü aracılığıyla öğrenci bilgisini alınırken, ESP32 kartında bulunan wifi modülü sayesinde ağ üzerinden sunucuyla iletişim kurarak yoklama kayıt işlemlerini gerçekleştirir. Geliştirilen bu sistem, öğrenci devamsızlık verilerini otomatik olarak okuyup işleyerek, manuel yoklama sürecinde harcanan zamanı ve yapılan hataları önemli ölçüde azaltacaktır. Böylece, derslerin verimliliği artacak ve eğitmenler, ders süresini daha etkin kullanabilecektir. Otomatik yoklama sistemi, eğitmenlerin zamanını daha verimli kullanmasını sağlarken, öğrenci devamsızlık takibini daha güvenilir ve hatasız hale getirecektir.
 
+![System-architect](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/959651a1-9e77-4b1d-bf15-c656e4866a95)
+
 
 
 ## Web Interface
