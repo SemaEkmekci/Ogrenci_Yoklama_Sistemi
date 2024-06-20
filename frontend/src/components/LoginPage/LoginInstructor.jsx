@@ -37,6 +37,11 @@ const LoginInstructor = () => {
         })
         .then((res) => {
           if (res.data.success) {
+            console.log(res.data.degree);
+            if (res.data.degree === "SuperUser") {
+              navigate("/admin");
+              return;
+            }
             navigate("/instructor");
           } else {
             alert("Kayıt yok");
@@ -48,42 +53,14 @@ const LoginInstructor = () => {
     }
   };
 
-  // const handleLogin = async () => {
-  //   console.log(userName);
-  //   try {
-  //     const response = await fetch('http://localhost:9000/instructor/login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         userName: userName,
-  //         password: password,
-  //       }),
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       console.log(data);
-  //       if(data.success){
-  //         window.location.href = '/instructor';
-  //       }
-  //     } else {
-  //       console.error('Failed to login:', response.status);
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to login:', error);
-  //   }
-  // };
-
   return (
-    <div className="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
-      <div className="px-8 md:px-12">
+    <div className="bg-gray-100 flex flex-col md:flex-row rounded-2xl shadow-lg max-w-3xl p-5 items-center">
+      <div className="order-2 md:order-1 px-8 md:px-12 flex-1">
         <h2 className="font-bold text-2xl text-[#002D74]">Akademisyen</h2>
         <p className="text-xs mt-4 text-[#002D74]">NEÜ YOKLAMA SİSTEMİ</p>
         <form className="flex flex-col gap-4">
           <input
-            className="p-2 mt-8 rounded-xl border border-gray-400"
+            className="p-2 mt-2 md:mt-8 rounded-xl border border-gray-400"
             type="text"
             name="username"
             placeholder="Kullanıcı Adı"
@@ -124,15 +101,12 @@ const LoginInstructor = () => {
             Giriş Yap
           </button>
         </form>
-
-        {/* <div className="mt-5 text-xs border-b border-[#002D74] py-4 text-[#002D74]">
-          <a href="#">Forgot your password?</a>
-        </div>
-      */}
       </div>
-      <div className="md:block hidden w-1/2">
-        <img src={NEULOGO} alt="" className="rounded-2xl w-60 h-60" />
+      <div className="md:w-1/2 flex md:order-2 justify-center md:justify-start mb-4 md:mb-0">
+      
+        <img src={NEULOGO} alt="NEÜ Logo" className="rounded-2xl w-48 h-48 md:w-60 md:h-60 mx-auto md:mx-0" />
       </div>
+      
     </div>
   );
 };

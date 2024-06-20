@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import StudentInfo from "../services/StudentPage/StudentInfo";
 import Sidebar from "../layout/SidebarStudent";

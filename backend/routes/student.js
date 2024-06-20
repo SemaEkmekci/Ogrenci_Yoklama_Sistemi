@@ -143,4 +143,35 @@ router.post("/absenceList", async (req, res) => {
   }
 });
 
+
+
+router.post("/attendanceList", async (req, res) => {
+  const { lessonName } = req.body;
+  const pool = await db.getConnection();
+  
+  try {
+    const request = pool.request();
+    request.input("userID", sql.VarChar, req.session.no);
+    request.input("lessonName", sql.VarChar, lessonName);
+    
+    const query = `
+      SELECT y.yoklama_tarihi
+      FROM yoklama_listeleri y
+      INNER JOIN ders_programi dp ON y.ders_id = dp.ders_id
+      WHERE y.ogrenci_no = (SELECT ogrenci_no FROM ogrenci WHERE ogrenci_id = @userID)
+        AND dp.ders_id = (SELECT ders_id FROM ders WHERE ders_adi = @lessonName)
+    `;
+    
+    const result = await request.query(query);
+    console.log(result);
+    return res.json({ message: "success", attendanceList: result.recordset });
+  } catch (error) {
+    console.error("Failed to get attendance list:", error);
+    return res.status(500).json({ message: "error" });
+  }
+});
+
+
+
+
 module.exports = router;

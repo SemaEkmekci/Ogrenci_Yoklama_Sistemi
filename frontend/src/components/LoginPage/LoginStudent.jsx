@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import NEULOGO from "../../assets/NEULogo.png";
 import axios from "axios";
 
-const LoginInstructor = () => {
+const LoginStudent = () => {
   const [fillColor, setFillColor] = useState("gray");
   const [typePassword, settypePassword] = useState("password");
   const [studentNumber, setStudentNumber] = useState("");
@@ -44,34 +44,22 @@ const LoginInstructor = () => {
           console.log(res);
         });
 
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   console.log(data);
-      //   if(data.success){
-      //     // window.location.href = '/student';
-      //     navigate('/student')
-      //     // fetchData();
-      //   }
-      // }
-      // else {
-      //   console.error('Failed to login:', response.status);
-      // }
     } catch (error) {
       console.error("Failed to login:", error);
     }
   };
 
   return (
-    <div className="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
-      <div className="md:block hidden w-1/2">
-        <img src={NEULOGO} alt="" className="rounded-2xl w-60 h-60" />
+    <div className="bg-gray-100 flex flex-col md:flex-row rounded-2xl shadow-lg max-w-3xl p-5 items-center">
+     <div className="md:w-1/2 flex justify-center md:justify-start mb-4 md:mb-0">
+        <img src={NEULOGO} alt="NEÜ Logo" className="rounded-2xl w-48 h-48 md:w-60 md:h-60" />
       </div>
-      <div className="px-8 md:px-12">
+      <div className="order-2 md:order-1 px-8 md:px-12 flex-1">
         <h2 className="font-bold text-2xl text-[#002D74]">Öğrenci</h2>
         <p className="text-xs mt-4 text-[#002D74]">NEÜ YOKLAMA SİSTEMİ</p>
         <form className="flex flex-col gap-4">
           <input
-            className="p-2 mt-8 rounded-xl border border-gray-400"
+            className="p-2 mt-2 md:mt-8 rounded-xl border border-gray-400"
             type="text"
             name="studentNumber"
             placeholder="Öğrenci No"
@@ -112,14 +100,9 @@ const LoginInstructor = () => {
             Giriş Yap
           </button>
         </form>
-
-        {/* <div className="mt-5 text-xs border-b border-[#002D74] py-4 text-[#002D74]">
-          <a href="#">Forgot your password?</a>
-        </div>
-      */}
       </div>
     </div>
   );
 };
 
-export default LoginInstructor;
+export default LoginStudent;

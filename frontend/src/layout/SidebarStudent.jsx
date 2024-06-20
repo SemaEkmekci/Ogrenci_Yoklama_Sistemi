@@ -52,7 +52,7 @@ const Sidebar = ({ studentNo, name, surname, department, handleShowCards }) => {
           <img
             src={NEULOGO}
             alt="logo"
-            className="w-16 h-16 rounded-full mr-4"
+            className="w-16 h-16 rounded-full mr-4 mb-3"
           />
           <span className="text-white text font-semibold">
             NEÜ YOKLAMA SİSTEMİ

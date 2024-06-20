@@ -11,7 +11,6 @@ AttendanceDownloadServices.downloadAttendanceList = async (
       "http://localhost:9000/attendance/downloadAttendance",
       {
         lessonName: heading,
-        selectedDate: selectedDate,
       },
       {
         responseType: "blob",

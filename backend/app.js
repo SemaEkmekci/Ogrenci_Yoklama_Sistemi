@@ -23,7 +23,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
       secure: false,
-      maxAge: 1000 * 60 * 15,
+      maxAge: 1000 * 60 * 20,
     },
   })
 );
@@ -34,11 +34,13 @@ const rfid = require("./routes/rfid");
 const student = require("./routes/student");
 const instructor = require("./routes/instructor");
 const attendance = require("./routes/attendance");
+const admin = require("./routes/admin");
 
 app.use("/rfid", rfid);
 app.use("/student", student);
 app.use("/instructor", instructor);
 app.use("/attendance", attendance);
+app.use("/admin", admin);
 
 app.listen(config.port, () =>
   console.log(`Server is running on http://localhost:${config.port}`)

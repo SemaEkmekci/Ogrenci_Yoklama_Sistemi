@@ -303,7 +303,7 @@ router.post("/login", async (req, res) => {
     );
 
     if (result.recordset.length === 1) {
-      const { akademisyen_id, tek_sifre } = result.recordset[0];
+      const { akademisyen_id, tek_sifre, unvan } = result.recordset[0];
       const passwordMatch = await bcrypt.compare(password, tek_sifre);
 
       if (passwordMatch) {
@@ -313,6 +313,7 @@ router.post("/login", async (req, res) => {
           success: true,
           message: "Başarılı giriş",
           no: req.session.no,
+          degree: unvan
         });
       } else {
         res.json({ success: false, message: "Şifre hatalı" });

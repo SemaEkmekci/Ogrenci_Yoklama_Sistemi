@@ -1,11 +1,11 @@
-import Login from "../components/Login";
+// import Login from "../components/Login";
 
-const MainPage = () => {
-  return (
-    <div>
-      <Login />
-    </div>
-  );
-};
+// const MainPage = () => {
+//   return (
+//     <div>
+//       <Login />
+//     </div>
+//   );
+// };
 
-export default MainPage;
+// export default MainPage;

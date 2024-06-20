@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import NEULOGO from "../assets/NEULogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBook,
   faUser,
-  faChartBar,
   faSignOutAlt,
   faUserTie,
+  faUserGear,
   faBars,
-  faTimes
+  faTimes,
+  faFileExcel
 } from "@fortawesome/free-solid-svg-icons";
 import SidebarService from "../services/Sidebar/Sidebar";
 
@@ -18,10 +18,10 @@ const Sidebar = ({
   name,
   surname,
   department,
-  handleShowCards,
   handleStudentTable,
-  handleActiveLesson,
-  handleReadExcel
+  handleInstructorTable,
+  handleReadExcel,
+  handleReadExcelInstructor
 }) => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -74,15 +74,6 @@ const Sidebar = ({
           <li className="mb-2 cursor-pointer">
             <a
               className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
-              onClick={handleShowCards}
-            >
-              <FontAwesomeIcon icon={faBook} />
-              <span className="ml-1">Dersler</span>
-            </a>
-          </li>
-          <li className="mb-2 cursor-pointer">
-            <a
-              className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
               onClick={handleStudentTable}
             >
               <FontAwesomeIcon icon={faUser} />
@@ -92,13 +83,13 @@ const Sidebar = ({
           <li className="mb-2 cursor-pointer">
             <a
               className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
-              onClick={handleActiveLesson}
+              onClick={handleInstructorTable}
             >
-              <FontAwesomeIcon icon={faChartBar} />
-              <span className="ml-1">Aktif Ders Yoklaması</span>
+              <FontAwesomeIcon icon={faUserTie} />
+              <span className="ml-1">Akademisyenler</span>
             </a>
           </li>
-          {/* <li className="mb-2 cursor-pointer">
+          <li className="mb-2 cursor-pointer">
             <a
               className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
               onClick={handleReadExcel}
@@ -106,13 +97,22 @@ const Sidebar = ({
               <FontAwesomeIcon icon={faFileExcel} />
               <span className="ml-1">Öğrenci Ekle</span>
             </a>
-          </li> */}
+          </li>
+          <li className="mb-2 cursor-pointer">
+            <a
+              className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
+              onClick={handleReadExcelInstructor}
+            >
+              <FontAwesomeIcon icon={faFileExcel} />
+              <span className="ml-1">Akademisyen Ekle</span>
+            </a>
+          </li>
         </ul>
 
         <div className="absolute bottom-0 left-0 w-full border-t border-gray-700 py-4 text-center">
           <div className="flex items-center justify-center mb-2">
             <FontAwesomeIcon
-              icon={faUserTie}
+              icon={faUserGear}
               style={{ color: "white", fontSize: "34px" }}
             />
             <div className="text-white ml-2 font-semibold">
