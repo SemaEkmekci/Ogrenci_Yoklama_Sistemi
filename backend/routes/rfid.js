@@ -9,6 +9,7 @@ router.get("/info", (req, res) => {
   res.send("Sema");
 });
 
+
 router.post("/ID", async (req, res) => {
   const data = req.body;
   console.log("Received data:", data);
@@ -141,4 +142,9 @@ router.post("/ID", async (req, res) => {
   res.json(responseInfo);
 });
 
+router.post("/ID-Save", async (req, res) => {
+  const data = req.body;
+  console.log("Received data:", data);
+res.send("Okey")
+});
 module.exports = router;

@@ -224,6 +224,31 @@ router.get("/instructor", async (req, res) => {
   }
 });
 
+router.get("/lesson", async (req, res) => {
+  if (req.session.no) {
+    try {
+      const pool = await db.getConnection();
+      const request = pool.request();
+
+      const query = `
+                SELECT 
+                    d.ders_id, 
+                    d.ders_adi
+                FROM 
+                    ders d
+            `;
+      const resultLesson = await request.query(query);
+      console.log(resultLesson);
+      res.json({ valid: true, lesson: resultLesson.recordset });
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ success: false, message: "An error occurred" });
+    }
+  } else {
+    return res.json({ valid: false, message: "Session not found" });
+  }
+});
+
 const validateInstructors = (instructors) => {
   instructors.forEach((instructor) => {
     // akademisyen_tc kontrolü
@@ -343,6 +368,95 @@ router.post("/upload-data-instructor", async (req, res) => {
             console.log(
               `Akademisyen zaten mevcut, atlanıyor: ${instructor.akademisyen_tc}`
             );
+            continue;
+          } else {
+            throw error;
+          }
+        }
+      }
+
+      await transaction.commit();
+      res
+        .status(200)
+        .json({ valid: true, msg: "Veriler başarıyla kaydedildi." });
+    } catch (error) {
+      if (!transaction._aborted) {
+        await transaction.rollback();
+      }
+      if (error.message && error.message.includes("Invalid")) {
+        res.status(400).json({
+          valid: true,
+          error: "Hatalı veri girdiniz:",
+          details: error.message,
+        });
+      } else {
+        console.error("Veri kaydında hata oluştu:", error);
+        res.status(500).json({
+          valid: true,
+          error: "Veri kaydında hata oluştu:",
+          details: error.message,
+        });
+      }
+    }
+  } else {
+    return res.json({ valid: false, message: "Session not found" });
+  }
+});
+
+const validateLessons = (lessons) => {
+  lessons.forEach((lesson) => {
+    // ders_id kontrolü
+    if (!lesson.ders_id) {
+      throw new Error(`ders_id sütununda boş veri var.`);
+    } else if (typeof lesson.ders_id !== "string") {
+      try {
+        lesson.ders_id = String(lesson.ders_id);
+      } catch (error) {
+        throw new Error(`ders_id sütununda veri uygun formata çevrilemiyor.`);
+      }
+    }
+
+    // ders_adi kontrolü
+    if (!lesson.ders_adi) {
+      throw new Error(`ders_adi sütununda boş veri var.`);
+    } else if (typeof lesson.ders_adi !== "string") {
+      try {
+        lesson.ders_adi = String(lesson.ders_adi);
+      } catch (error) {
+        throw new Error(`ders_adi sütununda veri uygun formata çevrilemiyor.`);
+      }
+    }
+  });
+};
+
+router.post("/upload-data-lesson", async (req, res) => {
+  console.log("Lesson upload started");
+
+  if (req.session.no) {
+    const lessons = req.body;
+    try {
+      validateLessons(lessons);
+    } catch (error) {
+      console.log("Hatalı veri");
+      return res.json({ error: 242, details: error.message });
+    }
+
+    const transaction = new sql.Transaction();
+    try {
+      await transaction.begin();
+
+      for (const lesson of lessons) {
+        try {
+          await new sql.Request(transaction)
+            .input("ders_id", sql.VarChar, lesson.ders_id)
+            .input("ders_adi", sql.VarChar, lesson.ders_adi)
+            .query(`
+                            INSERT INTO ders (ders_id, ders_adi)
+                            VALUES (@ders_id, @ders_adi)
+                        `);
+        } catch (error) {
+          if (error.number === 2627 || error.code === "EREQUEST") {
+            console.log(`Ders zaten mevcut, atlanıyor: ${lesson.ders_id}`);
             continue;
           } else {
             throw error;

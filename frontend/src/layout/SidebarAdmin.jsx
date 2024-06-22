@@ -7,6 +7,7 @@ import {
   faSignOutAlt,
   faUserTie,
   faUserGear,
+  faBook,
   faBars,
   faTimes,
   faFileExcel
@@ -20,8 +21,10 @@ const Sidebar = ({
   department,
   handleStudentTable,
   handleInstructorTable,
+  handleLessonTable,
   handleReadExcel,
-  handleReadExcelInstructor
+  handleReadExcelInstructor,
+  handleReadExcelLesson
 }) => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -92,6 +95,15 @@ const Sidebar = ({
           <li className="mb-2 cursor-pointer">
             <a
               className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
+              onClick={handleLessonTable}
+            >
+              <FontAwesomeIcon icon={faBook} />
+              <span className="ml-1">Dersler</span>
+            </a>
+          </li>
+          <li className="mb-2 cursor-pointer">
+            <a
+              className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
               onClick={handleReadExcel}
             >
               <FontAwesomeIcon icon={faFileExcel} />
@@ -105,6 +117,15 @@ const Sidebar = ({
             >
               <FontAwesomeIcon icon={faFileExcel} />
               <span className="ml-1">Akademisyen Ekle</span>
+            </a>
+          </li>
+          <li className="mb-2 cursor-pointer">
+            <a
+              className="flex items-center text-white px-6 py-2 hover:bg-gray-700"
+              onClick={handleReadExcelLesson}
+            >
+              <FontAwesomeIcon icon={faFileExcel} />
+              <span className="ml-1">Ders Ekle</span>
             </a>
           </li>
         </ul>
