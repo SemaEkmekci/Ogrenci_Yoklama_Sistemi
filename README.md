@@ -1,7 +1,6 @@
 __NEÜ Bilgisayar Mühendisliği 3.sınıf Bahar Dönemi Seçmeli Gömülü Sistemler Final Proje Ödevi__
 
-[21100011050_Rapor.pdf](https://github.com/user-attachments/files/15535391/21100011050_Rapor.pdf)
-
+[21100011050.pdf](https://github.com/user-attachments/files/16274831/21100011050.pdf)
 
 # Student Attendance System
 
@@ -62,7 +61,11 @@ For this project assignment, integration of RFID-RC522 and OLED display with ESP
 | SDA        | D21         |
 
 
+![image](https://github.com/user-attachments/assets/ab7b8dc0-3122-431d-9b6e-3b220447ff95)
 
+
+
+![image](https://github.com/user-attachments/assets/8c76a72a-83d6-4477-a762-295355b55716)
 
 ## Fritzing Scheme and Real Image Comparison
 
@@ -83,12 +86,21 @@ Bu çalışmada, öğrenci devamsızlık süreçlerinin düzenli ve etkin bir ş
 ![System-architect](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/959651a1-9e77-4b1d-bf15-c656e4866a95)
 
 
+## Veri Tabanı Şeması
+![image](https://github.com/user-attachments/assets/fb041d58-c336-4adb-b1d8-f849dda12a62)
+
 
 ## Web Interface
 ### Akademisyen
 ![1](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/7150a680-3ee9-4dcd-897f-28e8d634ca70)
 
-![image](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/59515ba7-76e6-407a-a1f3-eafd1c4f6026)
+![image](https://github.com/user-attachments/assets/6048712c-8ad0-46de-9868-c770018935c3)
+
+![image](https://github.com/user-attachments/assets/99391a10-6665-4d44-a37f-ea35343f8f78)
+![image](https://github.com/user-attachments/assets/b26726c3-f0ea-4aca-8e59-d3d0194e50e4)
+![image](https://github.com/user-attachments/assets/33bc493c-8548-4cab-914a-b64badbb04df)
+![image](https://github.com/user-attachments/assets/0a8827ca-b6c7-4049-809d-2adfde6be0a0)
+
 
 
 ### Öğrenci
@@ -98,8 +110,21 @@ Bu çalışmada, öğrenci devamsızlık süreçlerinin düzenli ve etkin bir ş
 
 ![8](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/2f64bf69-43c8-46f8-95b8-711213e673a6)
 
+![image](https://github.com/user-attachments/assets/a9954753-6948-4e1c-8b9c-60cf6c401002)
 
-![9](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/de26fcf1-4148-4ff3-a780-cba502b3fbd9)
+## Yönetici
+![image](https://github.com/user-attachments/assets/c6927cb1-08d4-4ecc-864f-d61d9d216671)
+![image](https://github.com/user-attachments/assets/790a5283-9aa9-4496-abe0-89c2d689d7d9)
+![image](https://github.com/user-attachments/assets/d5f5672c-2308-428f-912a-d9f90a200f52)
+![image](https://github.com/user-attachments/assets/7fcce483-9f07-48af-bf1b-9d62b4b06f13)
+![image](https://github.com/user-attachments/assets/ad2fcc6a-c0d4-4761-af06-86eec5debe59)
+![image](https://github.com/user-attachments/assets/1c570357-6aa5-4e4e-8ff2-66b154dc12f5)
+![image](https://github.com/user-attachments/assets/9ae69554-7e03-447d-94a2-56f2faadbb21)
+![image](https://github.com/user-attachments/assets/f7bd5f48-ab9b-4faa-ab8e-30731de56842)
+
+
+
+
 
 
 
