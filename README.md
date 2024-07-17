@@ -65,13 +65,11 @@ For this project assignment, integration of RFID-RC522 and OLED display with ESP
 
 
 
-![image](https://github.com/user-attachments/assets/8c76a72a-83d6-4477-a762-295355b55716)
-
 ## Fritzing Scheme and Real Image Comparison
 
 <div style="display: flex; justify-content: space-around;">
-    <img src="https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/d6a61153-dc8b-47ad-8edb-f99816dd599c" alt="Fritzing Scheme" width="400"/>
-    <img src="https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/7b8090c3-4f2d-4034-9d6f-bdbf90fe9437" alt="Real Image" width="400"/>
+    <img src="https://github.com/user-attachments/assets/fd1098c0-9bac-448c-8c2c-9c552ed38800" alt="Fritzing Scheme" width="400"/>
+    <img src="https://github.com/user-attachments/assets/8c76a72a-83d6-4477-a762-295355b55716" alt="Real Image" width="400"/>
 </div>
 
 
