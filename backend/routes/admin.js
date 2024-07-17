@@ -174,12 +174,9 @@ router.get("/students", async (req, res) => {
 
       const query = `
                 SELECT 
-                    o.ogrenci_no, 
-                    o.ad, 
-                    o.soyad, 
-                    o.bolum
+                    *
                 FROM 
-                    ogrenci o
+                    ogrenci
             `;
       const resultStudent = await request.query(query);
 
@@ -449,8 +446,7 @@ router.post("/upload-data-lesson", async (req, res) => {
         try {
           await new sql.Request(transaction)
             .input("ders_id", sql.VarChar, lesson.ders_id)
-            .input("ders_adi", sql.VarChar, lesson.ders_adi)
-            .query(`
+            .input("ders_adi", sql.VarChar, lesson.ders_adi).query(`
                             INSERT INTO ders (ders_id, ders_adi)
                             VALUES (@ders_id, @ders_adi)
                         `);
@@ -489,6 +485,69 @@ router.post("/upload-data-lesson", async (req, res) => {
     }
   } else {
     return res.json({ valid: false, message: "Session not found" });
+  }
+});
+
+router.put("/update-student", async (req, res) => {
+  if (req.session.no) {
+    const student = req.body;
+    console.log(student);
+    try {
+      validateStudents([student]);
+    } catch (error) {
+      console.log("Hatalı veri:", error);
+      return res.status(400).json({ error: 242, details: error.message });
+    }
+
+    let transaction;
+    try {
+      const pool = await db.getConnection();
+      transaction = new sql.Transaction(pool);
+      await transaction.begin();
+
+      const hashedPassword = await bcrypt.hash(student.tek_sifre, 15);
+
+      const request = new sql.Request(transaction);
+      request.queryTimeout = 30000; // 30 saniye timeout
+      console.log(student.oldStudentNumber);
+
+      await request
+        .input("old_ogrenci_no", sql.VarChar, student.oldStudentNumber)
+        .input("ogrenci_no", sql.VarChar, student.ogrenci_no)
+        .input("ogrenci_id", sql.VarChar, student.ogrenci_id)
+        .input("tek_sifre", sql.VarChar, hashedPassword)
+        .input("ad", sql.VarChar, student.ad)
+        .input("soyad", sql.VarChar, student.soyad)
+        .input("bolum", sql.VarChar, student.bolum)
+        .input("bolum_baslama_yili", sql.Int, student.bolum_baslama_yili)
+        .query(`
+          UPDATE ogrenci
+          SET ogrenci_no = @ogrenci_no,
+              ogrenci_id = @ogrenci_id,
+              tek_sifre = @tek_sifre,
+              ad = @ad,
+              soyad = @soyad,
+              bolum = @bolum,
+              bolum_baslama_yili = @bolum_baslama_yili
+          WHERE ogrenci_no = @old_ogrenci_no
+        `);
+      await transaction.commit();
+      res
+        .status(200)
+        .json({ valid: true, msg: "Öğrenci bilgileri başarıyla güncellendi." });
+    } catch (error) {
+      if (transaction && !transaction._aborted) {
+        await transaction.rollback();
+      }
+      console.error("Veri güncelleme hatası:", error);
+      res.status(500).json({
+        valid: false,
+        error: "Veri güncelleme hatası:",
+        details: error.message,
+      });
+    }
+  } else {
+    return res.status(401).json({ valid: false, message: "Session not found" });
   }
 });
 

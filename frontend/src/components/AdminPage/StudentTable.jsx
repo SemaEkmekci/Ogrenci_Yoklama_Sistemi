@@ -1,20 +1,41 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
+import Swal from "sweetalert2";
 import StudentTableServices from "../../services/AdminPage/StudentTable";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faPenToSquare, faEdit } from '@fortawesome/free-solid-svg-icons';
-import Modal from './Modal';
-
+import LessonTableServices from "../../services/AdminPage/LessonTable";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrashCan,
+  faPenToSquare,
+  faEdit,
+} from "@fortawesome/free-solid-svg-icons";
+import Modal from "./Modal";
+import useWebSocket from "./IDWebSocket";
 
 const StudentTable = () => {
   const [records, setRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [oldStudentNumber, setOldStudentNumber] = useState("");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [shouldConnectWebSocket, setShouldConnectWebSocket] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [studentCourses, setStudentCourses] = useState([]);
+
+  const userID = useWebSocket("ws://localhost:9000", shouldConnectWebSocket);
+
+  useEffect(() => {
+    if (userID && isEditing) {
+      setSelectedStudent((prevStudent) => ({
+        ...prevStudent,
+        ogrenci_id: userID,
+      }));
+    }
+  }, [userID, isEditing]);
 
   const columns = [
     {
@@ -60,18 +81,19 @@ const StudentTable = () => {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-    }
+    },
   ];
 
   useEffect(() => {
     fetchStudentInfo();
+    handleCourseAssign();
   }, []);
 
   const fetchStudentInfo = async () => {
     setIsLoading(true);
     try {
       const response = await StudentTableServices.getStudentInfo();
-      if(response.data.valid === false){
+      if (response.data.valid === false) {
         window.location.reload();
       }
       setRecords(response.data.students);
@@ -112,23 +134,38 @@ const StudentTable = () => {
     setFilteredRecords(filteredData);
   };
 
-  const handleEdit = (row) => {
-    setSelectedStudent(row);
-    setIsEditing(false);
-    setIsModalOpen(true);
+  const handleEdit = async (row) => {
+    const studentDetails = records.find(
+      (student) => student.ogrenci_no === row.ogrenci_no
+    );
+    setOldStudentNumber(studentDetails.ogrenci_no);
+    if (studentDetails) {
+      setSelectedStudent({
+        ...studentDetails,
+        oldStudentNumber: studentDetails.ogrenci_no,
+      });
+      setIsEditing(false);
+      setIsModalOpen(true);
+    } else {
+      console.error("Student details not found");
+    }
+  };
+
+  const handleUpdateInfo = () => {
+    setShouldConnectWebSocket(!shouldConnectWebSocket);
+    setIsEditing(!isEditing);
   };
 
   const handleDelete = async (ogrenci_no) => {
     const confirmed = window.confirm("Silmek istiyor musunuz?");
-    if (confirmed) {
-      try {
-        await StudentTableServices.deleteStudent(ogrenci_no);
-        // Update the list after student deletion
-        fetchStudentInfo();
-      } catch (error) {
-        console.error("Error deleting student:", error);
-      }
-    }
+    // if (confirmed) {
+    //   try {
+    //     await StudentTableServices.deleteStudent(ogrenci_no);
+    //     fetchStudentInfo();
+    //   } catch (error) {
+    //     console.error('Error deleting student:', error);
+    //   }
+    // }
   };
 
   const handleUpdate = async () => {
@@ -136,7 +173,14 @@ const StudentTable = () => {
       await StudentTableServices.updateStudent(selectedStudent);
       fetchStudentInfo();
       setIsModalOpen(false);
+      setIsEditing(false);
+      setShouldConnectWebSocket(false); // Close WebSocket connection
     } catch (error) {
+      Swal.fire(
+        "Hata",
+        "Bilgileri kontrol edin. Güncelleme yapılamadı. Veri tabanında başkasına ait olan öğrenci no ve id ekleyemezsiniz",
+        "error"
+      );
       console.error("Error updating student:", error);
     }
   };
@@ -149,6 +193,26 @@ const StudentTable = () => {
     }));
   };
 
+  const handleCourseAssign = async () => {
+    try {
+      const response = await LessonTableServices.getLessonInfo();
+      setCourses(response.data.lesson || []);
+      console.log(response.data.lesson);
+    } catch (error) {
+      console.error("Error assigning course:", error);
+    }
+  };
+
+  const handleStudentCourses = async () => {
+    try {
+      const response = await LessonTableServices.getLessonInfo();
+      setStudentCourses(response.data.lesson || []);
+      console.log(response.data.lesson);
+    } catch (error) {
+      console.error("Error assigning course:", error);
+    }
+  };
+
   const dataToDisplay = keyword !== "" ? filteredRecords : records;
 
   const paginationOptions = {
@@ -159,11 +223,11 @@ const StudentTable = () => {
   const customStyles = {
     rows: {
       style: {
-        '&:nth-of-type(odd)': {
-          backgroundColor: 'rgb(241, 241, 241)', // Tailwind's bg-gray-100
+        "&:nth-of-type(odd)": {
+          backgroundColor: "rgb(241, 241, 241)", // Tailwind's bg-gray-100
         },
-        '&:nth-of-type(even)': {
-          backgroundColor: 'rgb(255, 255, 255)', // Tailwind's bg-white
+        "&:nth-of-type(even)": {
+          backgroundColor: "rgb(255, 255, 255)", // Tailwind's bg-white
         },
       },
     },
@@ -194,7 +258,9 @@ const StudentTable = () => {
             paginationComponentOptions={paginationOptions}
             fixedHeader
             responsive
-            noDataComponent={<div className="text-center p-4">Kayıt bulunamadı</div>}
+            noDataComponent={
+              <div className="text-center p-4">Kayıt bulunamadı</div>
+            }
             customStyles={customStyles}
           />
         )}
@@ -202,75 +268,151 @@ const StudentTable = () => {
       {isModalOpen && (
         <Modal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setIsEditing(false);
+            setShouldConnectWebSocket(false); // Close WebSocket connection
+          }}
           heading="Öğrenci Güncelle"
         >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">Öğrenci Bilgileri</h2>
-            <FontAwesomeIcon
-              icon={faEdit}
-              onClick={() => setIsEditing(!isEditing)}
-              className="text-blue-500 cursor-pointer"
-              size="lg"
-              title="Düzenle"
-            />
+          <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">Öğrenci Bilgileri</h2>
+              <FontAwesomeIcon
+                icon={faEdit}
+                onClick={handleUpdateInfo}
+                className="text-blue-500 cursor-pointer"
+                size="lg"
+                title="Düzenle"
+              />
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700">Öğrenci No:</label>
+                  <input
+                    type="number"
+                    name="ogrenci_no"
+                    value={selectedStudent?.ogrenci_no || ""}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      isEditing ? "border-blue-300" : "border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Öğrenci ID:</label>
+                  <input
+                    type="text"
+                    name="ogrenci_id"
+                    value={selectedStudent?.ogrenci_id || ""}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      isEditing ? "border-blue-300" : "border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700">Ad:</label>
+                  <input
+                    type="text"
+                    name="ad"
+                    value={selectedStudent?.ad || ""}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      isEditing ? "border-blue-300" : "border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Soyad:</label>
+                  <input
+                    type="text"
+                    name="soyad"
+                    value={selectedStudent?.soyad || ""}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      isEditing ? "border-blue-300" : "border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700">Bölüm:</label>
+                  <input
+                    type="text"
+                    name="bolum"
+                    value={selectedStudent?.bolum || ""}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      isEditing ? "border-blue-300" : "border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">
+                    Bölüm Başlama Yılı:
+                  </label>
+                  <input
+                    type="number"
+                    name="bolum_baslama_yili"
+                    value={selectedStudent?.bolum_baslama_yili || ""}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      isEditing ? "border-blue-300" : "border-gray-300"
+                    } focus:outline-none`}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700">Ders Ekle:</label>
+                  <select
+                    name="course"
+                    disabled={!isEditing}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      isEditing ? "border-blue-300" : "border-gray-300"
+                    } focus:outline-none`}
+                  >
+                    <option value="">Ders Seç</option>
+                    {Array.isArray(courses) &&
+                      courses.map((course) => (
+                        <option key={course.ders_id} value={course.ders_id}>
+                          {course.ders_id}-{course.ders_adi}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-700">Aldığı Dersler:</label>
+                  <ul className="list-disc pl-5">
+                    {studentCourses.map((course) => (
+                      <li key={course.ders_id}>{course.ders_adi}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {isEditing && (
+              <div className="text-right mt-4">
+                <button
+                  onClick={handleUpdate}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+                >
+                  Güncelle
+                </button>
+              </div>
+            )}
           </div>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-gray-700">Öğrenci No:</label>
-              <input
-                type="text"
-                name="ogrenci_no"
-                value={selectedStudent?.ogrenci_no || ''}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded-md ${isEditing ? 'border-blue-300' : 'border-gray-300'} focus:outline-none`}
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Ad:</label>
-              <input
-                type="text"
-                name="ad"
-                value={selectedStudent?.ad || ''}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded-md ${isEditing ? 'border-blue-300' : 'border-gray-300'} focus:outline-none`}
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Soyad:</label>
-              <input
-                type="text"
-                name="soyad"
-                value={selectedStudent?.soyad || ''}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded-md ${isEditing ? 'border-blue-300' : 'border-gray-300'} focus:outline-none`}
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Bölüm:</label>
-              <input
-                type="text"
-                name="bolum"
-                value={selectedStudent?.bolum || ''}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded-md ${isEditing ? 'border-blue-300' : 'border-gray-300'} focus:outline-none`}
-              />
-            </div>
-          </div>
-          {isEditing && (
-            <div className="text-right mt-4">
-              <button
-                onClick={handleUpdate}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
-              >
-                Güncelle
-              </button>
-            </div>
-          )}
         </Modal>
       )}
     </div>

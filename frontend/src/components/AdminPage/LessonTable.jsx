@@ -228,29 +228,7 @@ const LessonTable = () => {
                 disabled={!isEditing}
                 className={`w-full px-3 py-2 border rounded-md ${isEditing ? 'border-blue-300' : 'border-gray-300'} focus:outline-none`}
               />
-            </div>
-            <div>
-              <label className="block text-gray-700">Bölüm:</label>
-              <input
-                type="text"
-                name="bolum"
-                value={selectedLesson?.bolum || ''}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded-md ${isEditing ? 'border-blue-300' : 'border-gray-300'} focus:outline-none`}
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Kredi:</label>
-              <input
-                type="text"
-                name="kredi"
-                value={selectedLesson?.kredi || ''}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded-md ${isEditing ? 'border-blue-300' : 'border-gray-300'} focus:outline-none`}
-              />
-            </div>
+            </div>  
           </div>
           {isEditing && (
             <div className="text-right mt-4">

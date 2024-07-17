@@ -9,7 +9,6 @@ router.get("/info", (req, res) => {
   res.send("Sema");
 });
 
-
 router.post("/ID", async (req, res) => {
   const data = req.body;
   console.log("Received data:", data);
@@ -46,7 +45,8 @@ router.post("/ID", async (req, res) => {
     AND baslangic_saati <= @currentTime 
     AND bitis_saati >= @currentTime 
     AND ders_programi.sinif_id = (SELECT sinif_id FROM sinif WHERE sinif_adi = @currentClass)
-`);
+  `);
+  
   request.input("userID", sql.VarChar, data.userID);
   const studentInfoResult = await request.query(
     "SELECT ogrenci_no, ad, soyad, bolum FROM ogrenci WHERE ogrenci_id = @userID"
@@ -90,16 +90,14 @@ router.post("/ID", async (req, res) => {
       const insertQuery = `
         INSERT INTO yoklama_listeleri (yoklama_tarihi, ders_id, ogrenci_no, derse_giris_saati, dersten_cikis_saati)
         VALUES (@currentDate, @lessonID, @studentNo,@entryTime, @exitTime)
-    `;
+      `;
 
       const parameters = {
         currentDate: currentLocaleDate,
-
         entryTime: currentTime,
         exitTime: bitisSaatiString[1].split(".000Z")[0],
       };
 
-      // request.input('currentDate', sql.VarChar, parameters.currentDate);
       request.input("entryTime", sql.VarChar, parameters.entryTime);
       request.input("exitTime", sql.VarChar, parameters.exitTime);
 
@@ -145,6 +143,11 @@ router.post("/ID", async (req, res) => {
 router.post("/ID-Save", async (req, res) => {
   const data = req.body;
   console.log("Received data:", data);
-res.send("Okey")
+  
+  // WebSocket ile bağlı olan clientlara veri gönder
+  req.app.broadcast(JSON.stringify(data));
+
+  res.send("Okey");
 });
+
 module.exports = router;
