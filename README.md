@@ -99,7 +99,7 @@ Bu çalışmada, öğrenci devamsızlık süreçlerinin düzenli ve etkin bir ş
 ![image](https://github.com/user-attachments/assets/33bc493c-8548-4cab-914a-b64badbb04df)
 ![image](https://github.com/user-attachments/assets/0a8827ca-b6c7-4049-809d-2adfde6be0a0)
 
-
+https://github.com/user-attachments/assets/04dd37a0-ec90-4ae2-bc0e-c81f2f8d63f5
 
 ### Öğrenci
 ![image](https://github.com/SemaEkmekci/Ogrenci_Yoklama_Sistemi/assets/94064744/b5b4b30f-bcfe-4d15-b28a-0e57be5bb88f)
@@ -119,9 +119,6 @@ Bu çalışmada, öğrenci devamsızlık süreçlerinin düzenli ve etkin bir ş
 ![image](https://github.com/user-attachments/assets/1c570357-6aa5-4e4e-8ff2-66b154dc12f5)
 ![image](https://github.com/user-attachments/assets/9ae69554-7e03-447d-94a2-56f2faadbb21)
 ![image](https://github.com/user-attachments/assets/f7bd5f48-ab9b-4faa-ab8e-30731de56842)
-
-
-
 
 
 
